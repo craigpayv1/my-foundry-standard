@@ -44,7 +44,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet_agent" {
-  name                 = "snet-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai-agent"
+  name                 = "snet-agent-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes = [
