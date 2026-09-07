@@ -107,6 +107,7 @@ resource "azurerm_network_security_group" "nsg_agent" {
     ]
   }
 }
+
 resource "azurerm_subnet_network_security_group_association" "nsg_association_agent" {
   subnet_id                 = azurerm_subnet.subnet_agent.id
   network_security_group_id = azurerm_network_security_group.nsg_agent.id
