@@ -982,83 +982,83 @@ resource "azurerm_role_assignment" "key_vault_secrets_officer_me" {
 #                                                                                                  #
 ####################################################################################################
 
-resource "azurerm_windows_virtual_machine" "jumpbox" {
-  name                  = "vm${var.geo_short}${random_string.unique.result}${var.env_name}ai"
-  resource_group_name   = data.azurerm_resource_group.rg.name
-  location              = data.azurerm_resource_group.rg.location
-  size                  = var.jump_box_size
-  network_interface_ids = [azurerm_network_interface.jumpbox_nic.id]
-  admin_username        = "aiadmin"
-  admin_password        = azurerm_key_vault_secret.key_vault_secret_aiadmin.value
+# resource "azurerm_windows_virtual_machine" "jumpbox" {
+#   name                  = "vm${var.geo_short}${random_string.unique.result}${var.env_name}ai"
+#   resource_group_name   = data.azurerm_resource_group.rg.name
+#   location              = data.azurerm_resource_group.rg.location
+#   size                  = var.jump_box_size
+#   network_interface_ids = [azurerm_network_interface.jumpbox_nic.id]
+#   admin_username        = "aiadmin"
+#   admin_password        = azurerm_key_vault_secret.key_vault_secret_aiadmin.value
 
-  source_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2022-Datacenter"
-    version   = "latest"
-  }
+#   source_image_reference {
+#     publisher = "MicrosoftWindowsServer"
+#     offer     = "WindowsServer"
+#     sku       = "2022-Datacenter"
+#     version   = "latest"
+#   }
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
+#   os_disk {
+#     caching              = "ReadWrite"
+#     storage_account_type = "Standard_LRS"
+#   }
 
-  lifecycle {
-    ignore_changes = [
-      tags, identity
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       tags, identity
+#     ]
+#   }
+# }
 
-resource "azurerm_network_interface" "jumpbox_nic" {
-  name                = "nic-jump-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
+# resource "azurerm_network_interface" "jumpbox_nic" {
+#   name                = "nic-jump-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
+#   location            = data.azurerm_resource_group.rg.location
+#   resource_group_name = data.azurerm_resource_group.rg.name
 
-  ip_configuration {
-    name                          = "jumpbox-nic-ipconfig"
-    subnet_id                     = azurerm_subnet.subnet_jump.id
-    public_ip_address_id          = azurerm_public_ip.pip_jump_box.id
-    private_ip_address_allocation = "Dynamic"
-  }
+#   ip_configuration {
+#     name                          = "jumpbox-nic-ipconfig"
+#     subnet_id                     = azurerm_subnet.subnet_jump.id
+#     public_ip_address_id          = azurerm_public_ip.pip_jump_box.id
+#     private_ip_address_allocation = "Dynamic"
+#   }
 
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       tags
+#     ]
+#   }
+# }
 
-resource "azurerm_public_ip" "pip_jump_box" {
-  name                = "pip-jump-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
-  allocation_method   = "Static"
+# resource "azurerm_public_ip" "pip_jump_box" {
+#   name                = "pip-jump-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
+#   location            = data.azurerm_resource_group.rg.location
+#   resource_group_name = data.azurerm_resource_group.rg.name
+#   allocation_method   = "Static"
 
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       tags
+#     ]
+#   }
+# }
 
-resource "azurerm_dev_test_global_vm_shutdown_schedule" "jumpbox_shutdown_schedule" {
-  virtual_machine_id    = azurerm_windows_virtual_machine.jumpbox.id
-  location              = data.azurerm_resource_group.rg.location
-  enabled               = true
-  timezone              = "GMT Standard Time"
-  daily_recurrence_time = "1830"
+# resource "azurerm_dev_test_global_vm_shutdown_schedule" "jumpbox_shutdown_schedule" {
+#   virtual_machine_id    = azurerm_windows_virtual_machine.jumpbox.id
+#   location              = data.azurerm_resource_group.rg.location
+#   enabled               = true
+#   timezone              = "GMT Standard Time"
+#   daily_recurrence_time = "1830"
 
-  notification_settings {
-    enabled = false
-  }
+#   notification_settings {
+#     enabled = false
+#   }
 
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       tags
+#     ]
+#   }
+# }
 
 ####################################################################################################
 #                                                                                                  #

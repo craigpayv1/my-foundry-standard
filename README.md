@@ -163,7 +163,7 @@ That's it! Your Foundry deployment is now complete.
 
 # Virtual Machine Access
 
-A Virtual Machine is included with this solution. This VM isn't specifically needed but it's a good approximation of private access to the Foundry solution. 
+Code for a Virtual Machine is included with this solution but it's commented out. This VM isn't specifically needed but it's a good approximation of private access to the Foundry solution. 
 
 A real world Foundry deployment wouldn't allow any public access. Such access would only be allowed via the private networking configured in this solution. The VNet deployed with this solution would likely be peered to a hub VNet with a site-to-site VPN or ExpressRoute or Bastion allowing secure access.
 
