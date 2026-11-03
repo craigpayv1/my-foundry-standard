@@ -462,6 +462,7 @@ resource "azurerm_search_service" "ai_search" {
   resource_group_name           = data.azurerm_resource_group.rg.name
   location                      = data.azurerm_resource_group.rg.location
   sku                           = var.search_sku
+  semantic_search_sku           = var.semantic_search_sku
   local_authentication_enabled  = false
   public_network_access_enabled = true
   network_rule_bypass_option    = "AzureServices"
