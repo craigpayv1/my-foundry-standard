@@ -457,6 +457,43 @@ resource "azapi_resource" "conn_aisearch" {
   ]
 }
 
+resource "azapi_resource" "conn_appinsights" {
+  type                      = "Microsoft.CognitiveServices/accounts/projects/connections@2026-05-01"
+  name                      = azurerm_application_insights.application_insights.name
+  parent_id                 = azapi_resource.ai_foundry_project.id
+  schema_validation_enabled = false
+  ignore_casing             = false
+  ignore_missing_property   = false
+
+  depends_on = [
+    azapi_resource.ai_foundry_project,
+    azurerm_application_insights.application_insights
+  ]
+
+  body = {
+    name = azurerm_application_insights.application_insights.name
+    properties = {
+      category = "AppInsights"
+      target   = azurerm_application_insights.application_insights.id
+      authType = "ProjectManagedIdentity"
+      #isSharedToAll = true
+      metadata = {
+        ApiType    = "Azure"
+        ResourceId = azurerm_application_insights.application_insights.id
+      }
+    }
+  }
+
+  sensitive_body = {
+    properties = {
+      metadata = {
+        ApplicationInsightsConnectionString = azurerm_application_insights.application_insights.connection_string
+      }
+    }
+  }
+
+}
+
 resource "azurerm_search_service" "ai_search" {
   name                          = "search-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
   resource_group_name           = data.azurerm_resource_group.rg.name
@@ -977,6 +1014,12 @@ resource "azurerm_role_assignment" "key_vault_secrets_officer_me" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+resource "azurerm_role_assignment" "monitoring_metrics_publisher_ai_foundry_project" {
+  scope                = azurerm_application_insights.application_insights.id
+  role_definition_name = "Monitoring Metrics Publisher"
+  principal_id         = azapi_resource.ai_foundry_project.output.identity.principalId
+}
+
 ####################################################################################################
 #                                                                                                  #
 # Jumpbox                                                                                          #
@@ -1073,6 +1116,20 @@ resource "azurerm_log_analytics_workspace" "log_analytics_workspace" {
   resource_group_name = data.azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_application_insights" "application_insights" {
+  name                = "appi-${var.geo_short}-${random_string.unique.result}-${var.env_name}-ai"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  application_type    = "web"
+  workspace_id        = azurerm_log_analytics_workspace.log_analytics_workspace.id
 
   lifecycle {
     ignore_changes = [
